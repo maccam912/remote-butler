@@ -27,13 +27,13 @@ logging.basicConfig(
 
 
 def get_llm():
-    # return CTransformers(model="marella/gpt-2-ggml", lib="avx")
+    return CTransformers(model="TheBloke/falcon-7b-instruct-GGML", lib="avx")
     # return HuggingFacePipeline.from_model_id(
     #     model_id="tiiuae/falcon-7b-instruct",
     #     task="text-generation",
     #     model_kwargs={"temperature": 0},
     # )
-    return ChatOpenAI(temperature=0)
+    # return ChatOpenAI(temperature=0)
 
 
 def get_agent_chain():
