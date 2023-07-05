@@ -199,6 +199,12 @@ requires_python = ">=3.5"
 summary = "Type system extensions for programs checked with the mypy type checker."
 
 [[package]]
+name = "nest-asyncio"
+version = "1.5.6"
+requires_python = ">=3.5"
+summary = "Patch asyncio to allow nested event loops"
+
+[[package]]
 name = "numexpr"
 version = "2.8.4"
 requires_python = ">=3.7"
@@ -371,7 +377,7 @@ dependencies = [
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev"]
-content_hash = "sha256:2ed8bda2676eba18629e6e480a3f1e07a34bcc5b80d000c794ef66e609627cf8"
+content_hash = "sha256:c2e15b6fe1e071445a2af38a980e3baa3fcafc417efaf0aa9c026dbce6217030"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -900,6 +906,10 @@ content_hash = "sha256:2ed8bda2676eba18629e6e480a3f1e07a34bcc5b80d000c794ef66e60
 "mypy-extensions 1.0.0" = [
     {url = "https://files.pythonhosted.org/packages/2a/e2/5d3f6ada4297caebe1a2add3b126fe800c96f56dbe5d1988a2cbe0b267aa/mypy_extensions-1.0.0-py3-none-any.whl", hash = "sha256:4392f6c0eb8a5668a69e23d168ffa70f0be9ccfd32b5cc2d26a34ae5b844552d"},
     {url = "https://files.pythonhosted.org/packages/98/a4/1ab47638b92648243faf97a5aeb6ea83059cc3624972ab6b8d2316078d3f/mypy_extensions-1.0.0.tar.gz", hash = "sha256:75dbf8955dc00442a438fc4d0666508a9a97b6bd41aa2f0ffe9d2f2725af0782"},
+]
+"nest-asyncio 1.5.6" = [
+    {url = "https://files.pythonhosted.org/packages/35/76/64c51c1cbe704ad79ef6ec82f232d1893b9365f2ff194111787dc91b004f/nest_asyncio-1.5.6.tar.gz", hash = "sha256:d267cc1ff794403f7df692964d1d2a3fa9418ffea2a3f6859a439ff482fef290"},
+    {url = "https://files.pythonhosted.org/packages/e9/1a/6dd9ec31cfdb34cef8fea0055b593ee779a6f63c8e8038ad90d71b7f53c0/nest_asyncio-1.5.6-py3-none-any.whl", hash = "sha256:b9a953fb40dceaa587d109609098db21900182b16440652454a146cffb06e8b8"},
 ]
 "numexpr 2.8.4" = [
     {url = "https://files.pythonhosted.org/packages/0b/ed/9fff5c0b1942f67fa5ee96eefc08e8e69c3a4262469885ebb9d2776ff4f1/numexpr-2.8.4-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:059546e8f6283ccdb47c683101a890844f667fa6d56258d48ae2ecf1b3875957"},
