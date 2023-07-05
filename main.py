@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import nest_asyncio
-from langchain import HuggingFacePipeline
 from langchain.agents import AgentType, initialize_agent
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.chat_models import ChatOpenAI
@@ -22,17 +21,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
-# response = agent_chain.run(input="Hi I'm Erica.")
-# print(response)
-
 
 def get_llm():
-    return CTransformers(model="TheBloke/falcon-7b-instruct-GGML", lib="avx")
-    # return HuggingFacePipeline.from_model_id(
-    #     model_id="tiiuae/falcon-7b-instruct",
-    #     task="text-generation",
-    #     model_kwargs={"temperature": 0},
-    # )
+    return CTransformers(model="TheBloke/falcon-40b-instruct-GGML", lib="avx")
     # return ChatOpenAI(temperature=0)
 
 
