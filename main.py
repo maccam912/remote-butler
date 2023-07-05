@@ -23,7 +23,7 @@ logging.basicConfig(
 
 
 def get_llm():
-    return CTransformers(model="TheBloke/falcon-40b-instruct-GGML", lib="avx")
+    return CTransformers(model="TheBloke/falcon-7b-instruct-GGML", lib="avx")
     # return ChatOpenAI(temperature=0)
 
 
