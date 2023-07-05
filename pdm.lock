@@ -88,6 +88,14 @@ requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7
 summary = "Cross-platform colored terminal text."
 
 [[package]]
+name = "ctransformers"
+version = "0.2.11"
+summary = "Python bindings for the Transformer models implemented in C/C++ using GGML library."
+dependencies = [
+    "huggingface-hub",
+]
+
+[[package]]
 name = "dataclasses-json"
 version = "0.5.9"
 requires_python = ">=3.6"
@@ -511,7 +519,7 @@ dependencies = [
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev"]
-content_hash = "sha256:149f5e23249f457073c3684229e6171fe480c941bac9dd84525984d791f5d027"
+content_hash = "sha256:f48fd562ad9d926a4e64865c1a56139047f3bb610337442c6438ae698fa549eb"
 
 [metadata.files]
 "accelerate 0.20.3" = [
@@ -711,6 +719,10 @@ content_hash = "sha256:149f5e23249f457073c3684229e6171fe480c941bac9dd84525984d79
 "colorama 0.4.6" = [
     {url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
+]
+"ctransformers 0.2.11" = [
+    {url = "https://files.pythonhosted.org/packages/0c/f6/1de7188f4676c659d8c3f0574c03c7287771cb7e936af83b963beb8b10ff/ctransformers-0.2.11-py3-none-any.whl", hash = "sha256:06aa3b2a42112fb688b0d9a54b9958501af7db8557bda067ffbc43645590c522"},
+    {url = "https://files.pythonhosted.org/packages/85/16/fd1d80c9202c7123f5b3bdea476b2200a28d86bf40ec687d5ad038514165/ctransformers-0.2.11.tar.gz", hash = "sha256:993a3ba05d37822d0111393ab214856b9fe40d28b48af1306ee63e94e716a4e2"},
 ]
 "dataclasses-json 0.5.9" = [
     {url = "https://files.pythonhosted.org/packages/86/c2/db1972ba8fda56d1c3317d8cca1c06af4b5df7e3c94345048d10cf4c7bf4/dataclasses-json-0.5.9.tar.gz", hash = "sha256:e9ac87b73edc0141aafbce02b44e93553c3123ad574958f0fe52a534b6707e8e"},

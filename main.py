@@ -3,17 +3,18 @@ import os
 from dataclasses import dataclass
 from datetime import datetime
 
+import nest_asyncio
+from langchain import HuggingFacePipeline
 from langchain.agents import AgentType, initialize_agent
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
-from langchain import HuggingFacePipeline
 from langchain.chat_models import ChatOpenAI
+from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
 from langchain.tools.playwright.utils import create_async_playwright_browser
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
-
-import nest_asyncio
+from telegram.ext import (ApplicationBuilder, ContextTypes, MessageHandler,
+                          filters)
 
 nest_asyncio.apply()
 
@@ -24,13 +25,16 @@ logging.basicConfig(
 # response = agent_chain.run(input="Hi I'm Erica.")
 # print(response)
 
+
 def get_llm():
-    return HuggingFacePipeline.from_model_id(
-        model_id="tiiuae/falcon-7b-instruct",
-        task="text-generation",
-        model_kwargs={"temperature": 0},
-    )
+    return CTransformers("tiiuae/falcon-7b-instruct", lib="avx")
+    # return HuggingFacePipeline.from_model_id(
+    #     model_id="tiiuae/falcon-7b-instruct",
+    #     task="text-generation",
+    #     model_kwargs={"temperature": 0},
+    # )
     # return ChatOpenAI(temperature=0)
+
 
 def get_agent_chain():
     chat_history = MessagesPlaceholder(variable_name="chat_history")
