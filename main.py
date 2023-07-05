@@ -11,7 +11,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
-from langchain.tools.playwright.utils import create_async_playwright_browser
+from langchain.tools.playwright.utils import create_sync_playwright_browser
 from telegram import Update
 from telegram.ext import (ApplicationBuilder, ContextTypes, MessageHandler,
                           filters)
@@ -40,8 +40,8 @@ def get_agent_chain():
     chat_history = MessagesPlaceholder(variable_name="chat_history")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-    async_browser = create_async_playwright_browser()
-    browser_toolkit = PlayWrightBrowserToolkit.from_browser(async_browser=async_browser)
+    sync_browser = create_sync_playwright_browser()
+    browser_toolkit = PlayWrightBrowserToolkit.from_browser(sync_browser=sync_browser)
     tools = browser_toolkit.get_tools()
 
     llm = get_llm()  # Also works well with Anthropic models
@@ -110,7 +110,7 @@ async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # get butler for this chat
     butler: Butler = butlers[chat_id]
 
-    response = await butler.agent_chain.arun(input=update.message.text)
+    response = butler.agent_chain.run(input=update.message.text)
     logging.info(f"Responding with: {response}")
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
