@@ -5,6 +5,7 @@ from datetime import datetime
 
 from langchain.agents import AgentType, initialize_agent
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
+from langchain import HuggingFacePipeline
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
@@ -23,6 +24,13 @@ logging.basicConfig(
 # response = agent_chain.run(input="Hi I'm Erica.")
 # print(response)
 
+def get_llm():
+    return HuggingFacePipeline.from_model_id(
+        model_id="tiiuae/falcon-7b-instruct",
+        task="text-generation",
+        model_kwargs={"temperature": 0},
+    )
+    # return ChatOpenAI(temperature=0)
 
 def get_agent_chain():
     chat_history = MessagesPlaceholder(variable_name="chat_history")
@@ -32,7 +40,7 @@ def get_agent_chain():
     browser_toolkit = PlayWrightBrowserToolkit.from_browser(async_browser=async_browser)
     tools = browser_toolkit.get_tools()
 
-    llm = ChatOpenAI(temperature=0)  # Also works well with Anthropic models
+    llm = get_llm()  # Also works well with Anthropic models
     agent_chain = initialize_agent(
         tools,
         llm,
