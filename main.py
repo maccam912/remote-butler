@@ -27,7 +27,7 @@ logging.basicConfig(
 
 
 def get_llm():
-    return CTransformers("tiiuae/falcon-7b-instruct", lib="avx")
+    return CTransformers("tiiuae/falcon-7b-instruct")
     # return HuggingFacePipeline.from_model_id(
     #     model_id="tiiuae/falcon-7b-instruct",
     #     task="text-generation",
