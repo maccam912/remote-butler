@@ -1,0 +1,25 @@
+
+[project]
+name = ""
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Matt Koski", email = "maccam912@gmail.com"},
+]
+dependencies = [
+    "langchain>=0.0.223",
+    "playwright>=1.35.0",
+    "beautifulsoup4>=4.12.2",
+    "openai>=0.27.8",
+    "lxml>=4.9.2",
+    "python-telegram-bot>=20.3",
+]
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+[tool]
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "ruff>=0.0.277",
+]
