@@ -23,8 +23,8 @@ logging.basicConfig(
 
 
 def get_llm():
-    # return CTransformers(model="TheBloke/falcon-7b-instruct-GGML", lib="avx")
-    return ChatOpenAI(temperature=0.1)
+    return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
+    #return ChatOpenAI(temperature=0.1)
 
 
 def get_agent_chain():
