@@ -12,8 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
 from langchain.tools.playwright.utils import create_async_playwright_browser
 from telegram import Update
-from telegram.ext import (ApplicationBuilder, ContextTypes, MessageHandler,
-                          filters)
+from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
 nest_asyncio.apply()
 
@@ -23,8 +22,11 @@ logging.basicConfig(
 
 
 def get_llm():
-    return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
-    #return ChatOpenAI(temperature=0.1)
+    # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
+    return ChatOpenAI(
+        temperature=0.1,
+        openai_api_base="https://local-ai.k3s.koski.co/v1/chat/completions",
+    )
 
 
 def get_agent_chain():
@@ -96,6 +98,9 @@ async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Received message for chat id {update.effective_chat.id}:  \
                  {update.message.text}"
     )
+    msg = await context.bot.send_message(
+        chat_id=update.effective_chat.id, text="Received. Responding..."
+    )
     # get chat that this is a part of
     chat_id = update.effective_chat.id
     # get butler for this chat
@@ -104,7 +109,9 @@ async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     response = butler.agent_chain.run(input=update.message.text)
     logging.info(f"Responding with: {response}")
 
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    await context.bot.edit_message_text(
+        chat_id=update.effective_chat.id, message_id=msg.message_id, text=response
+    )
 
 
 if __name__ == "__main__":
