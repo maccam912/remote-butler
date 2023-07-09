@@ -7,7 +7,8 @@ import nest_asyncio
 from langchain.agents import AgentType, initialize_agent
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.chat_models import ChatOpenAI
-from langchain.llms import CTransformers
+
+# from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
 from langchain.tools.playwright.utils import create_async_playwright_browser
@@ -25,7 +26,7 @@ def get_llm():
     # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
     return ChatOpenAI(
         temperature=0.1,
-        openai_api_base="https://local-ai.k3s.koski.co/v1/chat/completions",
+        openai_api_base="https://local-ai.k3s.koski.co/v1",
     )
 
 
