@@ -14,6 +14,7 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.tools.playwright.utils import create_async_playwright_browser
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+from tenacity import retry
 
 nest_asyncio.apply()
 
@@ -27,6 +28,8 @@ def get_llm():
     return ChatOpenAI(
         temperature=0.1,
         openai_api_base="https://local-ai.k3s.koski.co/v1",
+        request_timeout=1800,
+        retry_count=0,
     )
 
 
