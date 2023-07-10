@@ -6,7 +6,7 @@ from datetime import datetime
 import nest_asyncio
 from langchain.agents import AgentType, initialize_agent
 
-# from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
+from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import Tool
 from langchain.utilities import SearxSearchWrapper
@@ -16,7 +16,7 @@ from langchain.utilities import SearxSearchWrapper
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
 
-# from langchain.tools.playwright.utils import create_async_playwright_browser
+from langchain.tools.playwright.utils import create_async_playwright_browser
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
@@ -27,25 +27,33 @@ logging.basicConfig(
 )
 
 
-def get_llm():
+def get_llm(local: bool = False):
     # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
-    return ChatOpenAI(
-        temperature=0.1,
-        openai_api_base="https://local-ai.k3s.koski.co/v1",
-        streaming=True,
-        request_timeout=1800,
-    )
+    if not local:
+        return ChatOpenAI(
+            temperature=0.2,
+            # openai_api_base="https://local-ai.k3s.koski.co/v1",
+            # streaming=True,
+            # request_timeout=1800,
+        )
+    else:
+        return ChatOpenAI(
+            temperature=0.2,
+            openai_api_base="https://local-ai.k3s.koski.co/v1",
+            streaming=True,
+            request_timeout=1800,
+        )
 
 
-def get_agent_chain():
+def get_agent_chain(local: bool = False):
     chat_history = MessagesPlaceholder(variable_name="chat_history")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-    # async_browser = create_async_playwright_browser()
-    # browser_toolkit = PlayWrightBrowserToolkit.from_browser(async_browser=async_browser)
-    # tools = browser_toolkit.get_tools()
+    async_browser = create_async_playwright_browser()
+    browser_toolkit = PlayWrightBrowserToolkit.from_browser(async_browser=async_browser)
+    tools = browser_toolkit.get_tools()
     search = SearxSearchWrapper(searx_host="https://searxng.k3s.koski.co")
-    tools = [
+    tools += [
         Tool.from_function(
             func=search.run,
             name="Search",
@@ -54,7 +62,7 @@ def get_agent_chain():
         ),
     ]
 
-    llm = get_llm()  # Also works well with Anthropic models
+    llm = get_llm(local)  # Also works well with Anthropic models
     agent_chain = initialize_agent(
         tools,
         llm,
@@ -86,28 +94,31 @@ class Butlers(dict):
     """
 
     butlers: dict = {}
+    local: bool
 
-    def __init__(self):
+    def __init__(self, local: bool = False):
         super().__init__()
+        self.local = local
 
     def __getitem__(self, chat_id):
         if chat_id not in self.butlers:
             self.butlers[chat_id] = Butler(
-                agent_chain=get_agent_chain(), last_used_ts=datetime.now()
+                agent_chain=get_agent_chain(self.local), last_used_ts=datetime.now()
             )
         else:
             butler = self.butlers[chat_id]
             if (datetime.now() - butler.last_used_ts).total_seconds() > 60 * 15:
                 del self.butlers[chat_id]
                 self.butlers[chat_id] = Butler(
-                    agent_chain=get_agent_chain(), last_used_ts=datetime.now()
+                    agent_chain=get_agent_chain(self.local), last_used_ts=datetime.now()
                 )
             else:
                 butler.last_used_ts = datetime.now()
         return self.butlers[chat_id]
 
 
-butlers = Butlers()
+butlers = Butlers(local=False)
+local_butlers = Butlers(local=True)
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -122,6 +133,11 @@ async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     # get butler for this chat
     butler: Butler = butlers[chat_id]
+
+    prompt = update.message.text
+    if prompt[0:5] == "local":
+        prompt = prompt[5:]
+        butler: Butler = local_butlers[chat_id]
 
     response = butler.agent_chain.run(input=update.message.text)
     logging.info(f"Responding with: {response}")
