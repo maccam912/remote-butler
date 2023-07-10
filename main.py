@@ -32,6 +32,7 @@ def get_llm(local: bool = False):
     if not local:
         return ChatOpenAI(
             temperature=0.2,
+            model="gpt-4",
             # openai_api_base="https://local-ai.k3s.koski.co/v1",
             # streaming=True,
             # request_timeout=1800,
