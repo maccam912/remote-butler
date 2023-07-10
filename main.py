@@ -5,13 +5,18 @@ from datetime import datetime
 
 import nest_asyncio
 from langchain.agents import AgentType, initialize_agent
-from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
+
+# from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.chat_models import ChatOpenAI
+from langchain.tools import Tool
+from langchain.utilities import SearxSearchWrapper
+
 
 # from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
-from langchain.tools.playwright.utils import create_async_playwright_browser
+
+# from langchain.tools.playwright.utils import create_async_playwright_browser
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
@@ -29,7 +34,6 @@ def get_llm():
         openai_api_base="https://local-ai.k3s.koski.co/v1",
         streaming=True,
         request_timeout=1800,
-        retry_count=0,
     )
 
 
@@ -37,9 +41,18 @@ def get_agent_chain():
     chat_history = MessagesPlaceholder(variable_name="chat_history")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-    async_browser = create_async_playwright_browser()
-    browser_toolkit = PlayWrightBrowserToolkit.from_browser(async_browser=async_browser)
-    tools = browser_toolkit.get_tools()
+    # async_browser = create_async_playwright_browser()
+    # browser_toolkit = PlayWrightBrowserToolkit.from_browser(async_browser=async_browser)
+    # tools = browser_toolkit.get_tools()
+    search = SearxSearchWrapper(searx_host="https://searxng.k3s.koski.co")
+    tools = [
+        Tool.from_function(
+            func=search.run,
+            name="Search",
+            description="useful for when you need to answer questions about current events"
+            # coroutine= ... <- you can specify an async method if desired as well
+        ),
+    ]
 
     llm = get_llm()  # Also works well with Anthropic models
     agent_chain = initialize_agent(
