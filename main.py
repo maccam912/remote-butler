@@ -57,7 +57,7 @@ def get_agent_chain(local: bool = False):
         Tool.from_function(
             func=search.run,
             name="Search",
-            description="useful for when you need to answer questions about current events"
+            description="useful for when you need to answer questions that can be found on the internet"
             # coroutine= ... <- you can specify an async method if desired as well
         ),
     ]
