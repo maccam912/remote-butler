@@ -27,25 +27,33 @@ logging.basicConfig(
 )
 
 
-def get_llm(local: bool = False):
+def get_llm(model: str = "3.5"):
     # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
-    if not local:
-        return ChatOpenAI(
-            temperature=0.2,
-            # openai_api_base="https://local-ai.k3s.koski.co/v1",
-            # streaming=True,
-            # request_timeout=1800,
-        )
-    else:
+    if model == "local":
         return ChatOpenAI(
             temperature=0.2,
             openai_api_base="https://local-ai.k3s.koski.co/v1",
             streaming=True,
             request_timeout=1800,
         )
+    elif model == "4":
+        return ChatOpenAI(
+            temperature=0.2,
+            model="gpt4",
+            # openai_api_base="https://local-ai.k3s.koski.co/v1",
+            # streaming=True,
+            # request_timeout=1800,
+        )
+    elif model == "3.5":
+        return ChatOpenAI(
+            temperature=0.2,
+            # openai_api_base="https://local-ai.k3s.koski.co/v1",
+            # streaming=True,
+            # request_timeout=1800,
+        )
 
 
-def get_agent_chain(local: bool = False):
+def get_agent_chain(model: str = "3.5"):
     chat_history = MessagesPlaceholder(variable_name="chat_history")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
@@ -62,7 +70,7 @@ def get_agent_chain(local: bool = False):
         ),
     ]
 
-    llm = get_llm(local)  # Also works well with Anthropic models
+    llm = get_llm(model)  # Also works well with Anthropic models
     agent_chain = initialize_agent(
         tools,
         llm,
@@ -94,31 +102,32 @@ class Butlers(dict):
     """
 
     butlers: dict = {}
-    local: bool
+    model: str
 
-    def __init__(self, local: bool = False):
+    def __init__(self, model: str = "3.5"):
         super().__init__()
-        self.local = local
+        self.model = model
 
     def __getitem__(self, chat_id):
         if chat_id not in self.butlers:
             self.butlers[chat_id] = Butler(
-                agent_chain=get_agent_chain(self.local), last_used_ts=datetime.now()
+                agent_chain=get_agent_chain(self.model), last_used_ts=datetime.now()
             )
         else:
             butler = self.butlers[chat_id]
             if (datetime.now() - butler.last_used_ts).total_seconds() > 60 * 15:
                 del self.butlers[chat_id]
                 self.butlers[chat_id] = Butler(
-                    agent_chain=get_agent_chain(self.local), last_used_ts=datetime.now()
+                    agent_chain=get_agent_chain(self.model), last_used_ts=datetime.now()
                 )
             else:
                 butler.last_used_ts = datetime.now()
         return self.butlers[chat_id]
 
 
-butlers = Butlers(local=False)
-local_butlers = Butlers(local=True)
+butlers = Butlers("3.5")
+local_butlers = Butlers("local")
+four_butlers = Butlers("4")
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -135,9 +144,13 @@ async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     butler: Butler = butlers[chat_id]
 
     prompt = update.message.text
-    if prompt[0:5] == "local":
-        prompt = prompt[5:]
+    first_word = prompt.split(" ")[0]
+    if first_word == "local":
+        prompt = prompt.replace("local ", "")
         butler: Butler = local_butlers[chat_id]
+    if first_word == "4":
+        prompt = prompt.replace("4 ", "")
+        butler: Butler = four_butlers[chat_id]
 
     response = butler.agent_chain.run(input=update.message.text)
     logging.info(f"Responding with: {response}")
