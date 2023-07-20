@@ -15,9 +15,9 @@ dependencies = [
     "python-telegram-bot>=20.3",
     "nest-asyncio>=1.5.6",
     "ctransformers>=0.2.11",
-    "petals>=1.1.5",
+    "petals>=2",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.10,<3.11"
 license = {text = "MIT"}
 
 [tool]
