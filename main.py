@@ -8,6 +8,7 @@ from langchain.agents import AgentType, initialize_agent
 
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.chat_models import ChatOpenAI
+from langchain.llms import Petals
 from langchain.tools import Tool
 from langchain.utilities import SearxSearchWrapper
 
@@ -29,7 +30,11 @@ logging.basicConfig(
 
 def get_llm(model: str = "3.5"):
     # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
-    if model == "local":
+    if model == "petals":
+        return Petals(
+            model_name="meta-llama/Llama-2-70b-chat-hf"
+        )
+    elif model == "local":
         return ChatOpenAI(
             temperature=0.2,
             openai_api_base="https://local-ai.k3s.koski.co/v1",
@@ -125,9 +130,7 @@ class Butlers(dict):
         return self.butlers[chat_id]
 
 
-butlers = Butlers("3.5")
-local_butlers = Butlers("local")
-four_butlers = Butlers("4")
+butlers = Butlers("petals")
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -142,15 +145,6 @@ async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     # get butler for this chat
     butler: Butler = butlers[chat_id]
-
-    prompt = update.message.text
-    first_word = prompt.split(" ")[0]
-    if first_word == "local":
-        prompt = prompt.replace("local ", "")
-        butler: Butler = local_butlers[chat_id]
-    if first_word == "4":
-        prompt = prompt.replace("4 ", "")
-        butler: Butler = four_butlers[chat_id]
 
     response = butler.agent_chain.run(input=update.message.text)
     logging.info(f"Responding with: {response}")
