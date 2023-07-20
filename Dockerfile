@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10-slim-bullseye
 
 RUN apt-get update && apt-get install -y chromium curl
 RUN curl -sSL https://pdm.fming.dev/dev/install-pdm.py | python3 -
