@@ -130,7 +130,7 @@ class Butlers(dict):
         return self.butlers[chat_id]
 
 
-butlers = Butlers("petals")
+butlers = Butlers("local")
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
