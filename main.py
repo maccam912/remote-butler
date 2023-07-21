@@ -28,27 +28,15 @@ logging.basicConfig(
 
 
 def get_llm(model: str = "3.5"):
-    # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
     if model == "local":
         return ChatOpenAI(
             temperature=0.2,
             openai_api_base="https://local-ai.k3s.koski.co/v1",
             request_timeout=60,
         )
-    elif model == "4":
-        return ChatOpenAI(
-            temperature=0.2,
-            model="gpt-4",
-            # openai_api_base="https://local-ai.k3s.koski.co/v1",
-            # streaming=True,
-            # request_timeout=1800,
-        )
     elif model == "3.5":
         return ChatOpenAI(
             temperature=0.2,
-            # openai_api_base="https://local-ai.k3s.koski.co/v1",
-            # streaming=True,
-            # request_timeout=1800,
         )
 
 
@@ -124,7 +112,7 @@ class Butlers(dict):
         return self.butlers[chat_id]
 
 
-butlers = Butlers("4")
+butlers = Butlers("local")
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
