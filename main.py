@@ -38,7 +38,7 @@ def get_llm(model: str = "3.5"):
     elif model == "4":
         return ChatOpenAI(
             temperature=0.2,
-            model="gpt4",
+            model="gpt-4",
             # openai_api_base="https://local-ai.k3s.koski.co/v1",
             # streaming=True,
             # request_timeout=1800,
