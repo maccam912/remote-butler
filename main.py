@@ -8,7 +8,6 @@ from langchain.agents import AgentType, initialize_agent
 
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.chat_models import ChatOpenAI
-from langchain.llms import Petals
 from langchain.tools import Tool
 from langchain.utilities import SearxSearchWrapper
 
