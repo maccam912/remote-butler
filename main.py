@@ -29,15 +29,10 @@ logging.basicConfig(
 
 def get_llm(model: str = "3.5"):
     # return CTransformers(model="TheBloke/mpt-30B-instruct-GGML", model_file="mpt-30b-instruct.ggmlv0.q8_0.bin", lib="avx")
-    if model == "petals":
-        return Petals(
-            model_name="meta-llama/Llama-2-70b-chat-hf"
-        )
-    elif model == "local":
+    if model == "local":
         return ChatOpenAI(
             temperature=0.2,
             openai_api_base="https://local-ai.k3s.koski.co/v1",
-            streaming=True,
             request_timeout=1800,
         )
     elif model == "4":
