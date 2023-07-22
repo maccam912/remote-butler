@@ -112,7 +112,7 @@ class Butlers(dict):
         return self.butlers[chat_id]
 
 
-butlers = Butlers("local")
+butlers = Butlers("3.5")
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
