@@ -7,7 +7,7 @@ import nest_asyncio
 from langchain.agents import AgentType, initialize_agent
 
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
-from langchain.chat_models import ChatOpenAI
+from langchain.llms import LlamaCpp
 from langchain.tools import Tool
 from langchain.utilities import SearxSearchWrapper
 
@@ -20,24 +20,64 @@ from langchain.tools.playwright.utils import create_async_playwright_browser
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
+import requests
+import os
+
+
+def download_file(url, save_path):
+    """
+    Downloads a file from the given URL and saves it to the specified path.
+
+    Parameters:
+    - url (str): The URL of the file to download.
+    - save_path (str): The path where the file should be saved.
+
+    Returns:
+    - str: A message indicating whether the file was downloaded or already exists.
+    """
+
+    if os.path.exists(save_path):
+        return f"File already exists at {save_path}."
+
+    response = requests.get(url, stream=True)
+
+    if response.status_code != 200:
+        return f"Failed to download the file. HTTP Status Code: {response.status_code}."
+
+    with open(save_path, "wb") as file:
+        for chunk in response.iter_content(chunk_size=8192):
+            file.write(chunk)
+
+    return f"File downloaded and saved to {save_path}."
+
+
 nest_asyncio.apply()
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
+download_file(
+    "https://huggingface.co/TheBloke/OpenOrcaxOpenChat-Preview2-13B-GGML/resolve/main/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+    "openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+)
 
-def get_llm(model: str = "3.5"):
-    if model == "local":
-        return ChatOpenAI(
-            temperature=0.2,
-            openai_api_base="https://local-ai.k3s.koski.co/v1",
-            request_timeout=600,
-        )
-    elif model == "3.5":
-        return ChatOpenAI(
-            temperature=0.2,
-        )
+
+def get_llm():
+    return LlamaCpp(
+        model_path="openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+        input={"temperature": 0.3, "max_length": 500, "top_p": 0.98},
+    )
+    # if model == "local":
+    #     return ChatOpenAI(
+    #         temperature=0.2,
+    #         openai_api_base="https://local-ai.k3s.koski.co/v1",
+    #         request_timeout=600,
+    #     )
+    # elif model == "3.5":
+    #     return ChatOpenAI(
+    #         temperature=0.2,
+    #     )
 
 
 def get_agent_chain(model: str = "3.5"):
@@ -112,7 +152,7 @@ class Butlers(dict):
         return self.butlers[chat_id]
 
 
-butlers = Butlers("3.5")
+butlers = Butlers("local")
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
