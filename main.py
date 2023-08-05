@@ -4,24 +4,19 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import nest_asyncio
+import requests
 from langchain.agents import AgentType, initialize_agent
-
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.llms import LlamaCpp
-from langchain.tools import Tool
-from langchain.utilities import SearxSearchWrapper
-
 
 # from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
-
+from langchain.tools import Tool
 from langchain.tools.playwright.utils import create_async_playwright_browser
+from langchain.utilities import SearxSearchWrapper
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
-
-import requests
-import os
 
 
 def download_file(url, save_path):
@@ -80,7 +75,7 @@ def get_llm():
     #     )
 
 
-def get_agent_chain(model: str = "3.5"):
+def get_agent_chain():
     chat_history = MessagesPlaceholder(variable_name="chat_history")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
@@ -97,7 +92,7 @@ def get_agent_chain(model: str = "3.5"):
         ),
     ]
 
-    llm = get_llm(model)  # Also works well with Anthropic models
+    llm = get_llm()  # Also works well with Anthropic models
     agent_chain = initialize_agent(
         tools,
         llm,
@@ -131,28 +126,27 @@ class Butlers(dict):
     butlers: dict = {}
     model: str
 
-    def __init__(self, model: str = "3.5"):
+    def __init__(self):
         super().__init__()
-        self.model = model
 
     def __getitem__(self, chat_id):
         if chat_id not in self.butlers:
             self.butlers[chat_id] = Butler(
-                agent_chain=get_agent_chain(self.model), last_used_ts=datetime.now()
+                agent_chain=get_agent_chain(), last_used_ts=datetime.now()
             )
         else:
             butler = self.butlers[chat_id]
             if (datetime.now() - butler.last_used_ts).total_seconds() > 60 * 15:
                 del self.butlers[chat_id]
                 self.butlers[chat_id] = Butler(
-                    agent_chain=get_agent_chain(self.model), last_used_ts=datetime.now()
+                    agent_chain=get_agent_chain(), last_used_ts=datetime.now()
                 )
             else:
                 butler.last_used_ts = datetime.now()
         return self.butlers[chat_id]
 
 
-butlers = Butlers("local")
+butlers = Butlers()
 
 
 async def butler_helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
