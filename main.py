@@ -76,8 +76,9 @@ download_file(
 def get_llm():
     return LlamaCpp(
         model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-        n_ctx=4096,
+        n_ctx=2048,
         n_batch=128,
+        max_tokens=2048,
         use_mlock=True,
         verbose=True,
         # callback_manager=callback_manager,
