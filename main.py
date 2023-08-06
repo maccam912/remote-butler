@@ -17,11 +17,12 @@ from langchain.tools.playwright.utils import create_async_playwright_browser
 from langchain.utilities import SearxSearchWrapper
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+from tqdm import tqdm
 
 
 def download_file(url, save_path):
     """
-    Downloads a file from the given URL and saves it to the specified path.
+    Downloads a file from the given URL and saves it to the specified path with a progress bar.
 
     Parameters:
     - url (str): The URL of the file to download.
@@ -39,9 +40,18 @@ def download_file(url, save_path):
     if response.status_code != 200:
         return f"Failed to download the file. HTTP Status Code: {response.status_code}."
 
+    total_size = int(response.headers.get("content-length", 0))
+    block_size = 1024  # 1 Kibibyte
+    t = tqdm(total=total_size, unit="iB", unit_scale=True)
+
     with open(save_path, "wb") as file:
-        for chunk in response.iter_content(chunk_size=8192):
+        for chunk in response.iter_content(block_size):
+            t.update(len(chunk))
             file.write(chunk)
+    t.close()
+
+    if total_size != 0 and t.n != total_size:
+        return "Error: Something went wrong with the download."
 
     return f"File downloaded and saved to {save_path}."
 
