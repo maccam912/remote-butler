@@ -76,8 +76,11 @@ download_file(
 def get_llm():
     return LlamaCpp(
         model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-        # callback_manager=callback_manager,
+        n_ctx=4096,
+        n_batch=128,
+        use_mlock=True,
         verbose=True,
+        # callback_manager=callback_manager,
     )
     # if model == "local":
     #     return ChatOpenAI(
