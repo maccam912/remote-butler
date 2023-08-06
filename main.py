@@ -95,7 +95,7 @@ def get_llm():
     #     return ChatOpenAI(
     #         temperature=0.2,
     #     )
-    return Petals(model_name="meta-llama/Llama-2-70b-chat-hf", verbose=True, temperature=0.1, huggingface_api_key=os.getenv("HUGGINGFACE_API_KEY"))
+    return Petals(model_name="stabilityai/StableBeluga2", verbose=True, temperature=0.1)
 
 
 
