@@ -79,6 +79,7 @@ def get_llm():
         n_ctx=2048,
         n_batch=128,
         max_tokens=2048,
+        temperature=0.1,
         verbose=True,
         callback_manager=callback_manager,
     )
