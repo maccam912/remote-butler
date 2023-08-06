@@ -8,6 +8,8 @@ import requests
 from langchain.agents import AgentType, initialize_agent
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
 from langchain.llms import LlamaCpp
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 # from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
@@ -18,6 +20,7 @@ from langchain.utilities import SearxSearchWrapper
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
+callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 def download_file(url, save_path):
     """
@@ -73,7 +76,8 @@ download_file(
 def get_llm():
     return LlamaCpp(
         model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-        input={"temperature": 0.3, "max_length": 500, "top_p": 0.98},
+        # callback_manager=callback_manager,
+        verbose=True,
     )
     # if model == "local":
     #     return ChatOpenAI(
