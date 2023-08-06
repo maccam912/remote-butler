@@ -16,6 +16,7 @@ dependencies = [
     "nest-asyncio>=1.5.6",
     "ctransformers>=0.2.11",
     "requests>=2.31.0",
+    "petals>=2.0.1.post1",
 ]
 requires-python = ">=3.10,<3.11"
 license = {text = "MIT"}
