@@ -68,10 +68,10 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
-download_file(
-    "https://huggingface.co/TheBloke/OpenOrcaxOpenChat-Preview2-13B-GGML/resolve/main/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-    "/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-)
+# download_file(
+#     "https://huggingface.co/TheBloke/OpenOrcaxOpenChat-Preview2-13B-GGML/resolve/main/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+#     "/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+# )
 
 
 def get_llm():
@@ -95,7 +95,7 @@ def get_llm():
     #     return ChatOpenAI(
     #         temperature=0.2,
     #     )
-    return Petals(model_name="meta-llama/Llama-2-70b-chat-hf")
+    return Petals(model_name="stabilityai/StableBeluga2")
 
 
 
