@@ -17,44 +17,46 @@ from langchain.tools.playwright.utils import create_async_playwright_browser
 from langchain.utilities import SearxSearchWrapper
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
-from tqdm import tqdm
 
 
 def download_file(url, save_path):
     """
     Downloads a file from the given URL and saves it to the specified path with a progress bar.
-
+    
     Parameters:
     - url (str): The URL of the file to download.
     - save_path (str): The path where the file should be saved.
-
+    
     Returns:
     - str: A message indicating whether the file was downloaded or already exists.
     """
-
+    
     if os.path.exists(save_path):
         return f"File already exists at {save_path}."
-
+    
     response = requests.get(url, stream=True)
-
+    
     if response.status_code != 200:
         return f"Failed to download the file. HTTP Status Code: {response.status_code}."
-
-    total_size = int(response.headers.get("content-length", 0))
-    block_size = 1024  # 1 Kibibyte
-    t = tqdm(total=total_size, unit="iB", unit_scale=True)
-
-    with open(save_path, "wb") as file:
+    
+    total_size = int(response.headers.get('content-length', 0))
+    block_size = 1024 # 1 Kibibyte
+    
+    def print_progress_bar(completed, total):
+        percent_done = (completed / total) * 100
+        print(f"Downloaded {completed} of {total} bytes ({percent_done:.2f}%).\n")
+    
+    bytes_downloaded = 0
+    with open(save_path, 'wb') as file:
         for chunk in response.iter_content(block_size):
-            t.update(len(chunk))
+            bytes_downloaded += len(chunk)
+            print_progress_bar(bytes_downloaded, total_size)
             file.write(chunk)
-    t.close()
-
-    if total_size != 0 and t.n != total_size:
+    
+    if bytes_downloaded != total_size:
         return "Error: Something went wrong with the download."
-
+    
     return f"File downloaded and saved to {save_path}."
-
 
 nest_asyncio.apply()
 
