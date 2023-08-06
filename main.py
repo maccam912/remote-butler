@@ -82,6 +82,7 @@ def get_llm():
         temperature=0.1,
         verbose=True,
         callback_manager=callback_manager,
+        grammar="/prompt.gbnf",
     )
     # if model == "local":
     #     return ChatOpenAI(

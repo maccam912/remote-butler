@@ -1,0 +1,14 @@
+root ::= "Question:" ws string ws (thoughtActionObservation ws)+
+
+thoughtActionObservation ::= ws "Thought:" ws string "\nAction:\n```" tool "```\nObservation:" ws string 
+
+tool ::= "{\"action\": \"" action "\", \"action_input\": \"" string "\"}"
+action ::= "Final Answer" | "Search"
+
+string ::=
+  "\"" (
+    [^"\\] |
+    "\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F]) # escapes
+  )* "\"" ws
+
+ws ::= ([ \t\n] ws)?
