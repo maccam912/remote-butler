@@ -79,9 +79,8 @@ def get_llm():
         n_ctx=2048,
         n_batch=128,
         max_tokens=2048,
-        use_mlock=True,
         verbose=True,
-        # callback_manager=callback_manager,
+        callback_manager=callback_manager,
     )
     # if model == "local":
     #     return ChatOpenAI(
