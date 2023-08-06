@@ -66,13 +66,13 @@ logging.basicConfig(
 
 download_file(
     "https://huggingface.co/TheBloke/OpenOrcaxOpenChat-Preview2-13B-GGML/resolve/main/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-    "openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+    "/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
 )
 
 
 def get_llm():
     return LlamaCpp(
-        model_path="openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+        model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
         input={"temperature": 0.3, "max_length": 500, "top_p": 0.98},
     )
     # if model == "local":
