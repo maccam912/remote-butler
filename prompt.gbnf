@@ -1,9 +1,8 @@
-root ::= "Question:" ws string ws (thoughtActionObservation ws)+
+root ::= "Question: " string (thoughtActionObservation ws)+
 
-thoughtActionObservation ::= ws "Thought:" ws string "\nAction:\n```" tool "```\nObservation:" ws string 
+thoughtActionObservation ::= "\nThought: " string "\nAction:\n```\n" tool "\n```\nObservation: " string 
 
-tool ::= "{\"action\": \"" action "\", \"action_input\": \"" string "\"}"
-action ::= "Final Answer" | "Search"
+tool ::= "{\"action\": \"" string "\", \"action_input\": \"" string "\"}"
 
 string ::=
   "\"" (
