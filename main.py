@@ -82,6 +82,7 @@ logging.basicConfig(
 def get_llm():
     return ChatOpenAI(
         temperature=0.2,
+        verbose=True,
     )
     # return LlamaCpp(
     #     model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
