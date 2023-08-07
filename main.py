@@ -7,8 +7,8 @@ import nest_asyncio
 import requests
 from langchain.agents import AgentType, initialize_agent
 from langchain.agents.agent_toolkits import PlayWrightBrowserToolkit
-# from langchain.llms import LlamaCpp
-from langchain.llms import Petals
+from langchain.llms import LlamaCpp
+# from langchain.llms import Petals
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
@@ -72,19 +72,23 @@ logging.basicConfig(
 #     "https://huggingface.co/TheBloke/OpenOrcaxOpenChat-Preview2-13B-GGML/resolve/main/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
 #     "/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
 # )
+download_file(
+    "https://huggingface.co/TheBloke/Llama-2-70B-GGML/resolve/main/llama-2-70b.ggmlv3.q5_K_M.bin",
+    "llama-2-70b.ggmlv3.q5_K_M.bin",
+)
 
 
 def get_llm():
-    # return LlamaCpp(
-    #     model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
-    #     n_ctx=2048,
-    #     n_batch=128,
-    #     max_tokens=2048,
-    #     temperature=0.1,
-    #     verbose=True,
-    #     callback_manager=callback_manager,
-    #     grammar="/prompt.gbnf",
-    # )
+    return LlamaCpp(
+        model_path="/models/openorcaxopenchat-preview2-13b.ggmlv3.q8_0.bin",
+        n_ctx=2048,
+        n_batch=128,
+        max_tokens=2048,
+        temperature=0.1,
+        verbose=True,
+        callback_manager=callback_manager,
+        # grammar="/prompt.gbnf",
+    )
     # if model == "local":
     #     return ChatOpenAI(
     #         temperature=0.2,
@@ -95,7 +99,7 @@ def get_llm():
     #     return ChatOpenAI(
     #         temperature=0.2,
     #     )
-    return Petals(model_name="stabilityai/StableBeluga2", verbose=True, temperature=0.1)
+    # return Petals(model_name="stabilityai/StableBeluga2", verbose=True, temperature=0.1)
 
 
 
