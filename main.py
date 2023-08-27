@@ -81,6 +81,7 @@ logging.basicConfig(
 
 def get_llm():
     return ChatOpenAI(
+        model=os.getenv("MODEL", "gpt-3.5-turbo"),
         temperature=0.2,
         verbose=True,
     )
